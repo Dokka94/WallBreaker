@@ -1,0 +1,32 @@
+How to use GitHub - right?
+
+1. You have to use a commander/terminal
+	In Linux/Mac: terminal, cd / ls etc. commands
+	In Windows: open start menu - start typing cmd - hit enter
+2. Usefull commands:
+	cd <path> - change directory
+	ls - (just in Linux/Mac) listing files in the actual directory
+	dir - (just in Windows) same as ls
+	git clone <url> - Clone to your computer (actually to the directory where you call this) that repository which url you copied
+					- If you have this, you can work on that project, and the git will follow your (and other's) changes.
+	git status - only works in the repository directory. It will list the modifies you make
+	git add <filename> - it will track the file to your repository
+	git commit -m "Message text" - to commit your changes to the repository. Make sure, that you write a meaningfull message,
+								 - so others will understand what the changes is!
+	git push - this will upload your commits to the server, so others can download it! (only works in the repository directory!)
+	
+	git pull - to update your repository... (only works in the repository directory!)
+	
+	That's all...
+	
+So: 1. you clone a repository
+	2. you make your own changes
+	3. you can check status whenever you want
+	4. add your files to track
+	5. commit them with a message
+	6. push them to the server so anyone can reach it
+	
+	if you have your repository just pull it down, not clone! It will update :)
+	
+	That's the very basic gitHub stuff, you have to know.
+	If something doesn't understandable here's a link to a video: https://www.youtube.com/watch?v=0fKg7e37bQE
