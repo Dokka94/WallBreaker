@@ -1,47 +1,28 @@
-
+import pygame
+import pygame.font
+from pickle import FALSE
 
 # interface
-class ViewElement:
-    def __iter__(self):
-        # TODO
-        self.x = 0
-        self.y = 0
+class ViewElement(pygame.sprite.Sprite):
+    
+    White = (255,255,255)
+    Black = (0,0,0)
+    Green = (81,164,82)
+    Bright_Green = (158,207,141)
+    
+    def __init__(self):
+        super(ViewElement,self).__init__()
+        self.xpos = 0
+        self.ypos = 0
         self.width = 0
         self.height = 0
-
-    def draw(self):
+        self.text = ""
+    
+    
+    def __iter__(self):
         # TODO
         pass
-
-
-# view
-class BallView(ViewElement):
-    def __init__(self):
-        # TODO
-        pass
-
-    def draw(self):
-        # TODO
-        pass
-
-
-# view
-class BatView(ViewElement):
-    def __init__(self):
-        # TODO
-        pass
-
-    def draw(self):
-        # TODO
-        pass
-
-
-# view
-class BrickView(ViewElement):
-    def __init__(self):
-        # TODO
-        pass
-
+    
     def draw(self):
         # TODO
         pass
@@ -49,10 +30,182 @@ class BrickView(ViewElement):
 
 # view
 class ButtonView(ViewElement):
-    def __init__(self):
-        # TODO
-        pass
-
+    
+    def __init__(self, x, y, width, height, text):
+       
+        super(ButtonView,self).__init__()
+        
+        self.xpos = x
+        self.ypos = y
+        self.width = width
+        self.height = height
+        self.text = text
+        
+        self.draw()
+        
+        
+    
     def draw(self):
+        font = pygame.font.SysFont('tahoma', 15)
+        textSurf = font.render(self.text, 1, self.Black)
+        self.image = pygame.Surface((self.width, self.height))
+        self.image.fill(self.White)
+        self.image.set_colorkey(self.White)
+        W = textSurf.get_width()
+        H = textSurf.get_height()
+        self.image.blit(textSurf, [self.width/2 - W/2, self.height/2 - H/2])
+        pygame.draw.rect(self.image, self.Black, [0, 0, self.width, self.height],2)        
+        self.rect = self.image.get_rect()
+        self.rect.x = self.xpos
+        self.rect.y = self.ypos
+
+    
+    
+    def click(self):
+        
+        click=pygame.mouse.get_pressed()
+        mouse=pygame.mouse.get_pos()
+        clicked = False
+        
+        if click[0] \
+        and self.xpos+self.width > mouse[0] >self.xpos \
+        and self.ypos+self.height > mouse[1] >self.ypos:
+        
+            clicked = True
+            
+        return clicked
+    
+
+# view
+class BallView(ViewElement):
+
+    def __init__(self, x, y, width, height):
         # TODO
-        pass
+        super(BallView,self).__init__()
+        self.xpos = x
+        self.ypos = y
+        self.width = width
+        self.height = height
+        self.x_change = 0
+        self.walls = 0
+        self.draw()
+    
+    def draw(self):
+        
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(self.White)
+        self.image.set_colorkey(self.White)
+        pygame.draw.ellipse(self.image, self.Black, [0, 0, self.width, self.height],1)
+        self.rect = self.image.get_rect()
+        self.rect.x = self.xpos
+        self.rect.y = self.ypos
+    
+    
+    def changespeed(self,x):
+        # TODO
+        self.x_change+= x
+    
+
+# view
+class BatView(ViewElement):
+    
+    def __init__(self, x, y, width, height):
+        # TODO
+        super(BatView,self).__init__()
+        self.xpos = x
+        self.ypos = y
+        self.width = width
+        self.height = height
+        self.rect = 0
+        self.x_change = 0
+        self.walls=None
+        self.draw()
+    
+    def draw(self):
+        
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(self.White)
+        self.image.set_colorkey(self.White)
+        pygame.draw.rect(self.image, self.Black, [0, 0, self.width, self.height],2)
+        self.rect = self.image.get_rect()
+        self.rect.x = self.xpos
+        self.rect.y = self.ypos
+    
+    
+    def changespeed(self,x):
+        # TODO
+        self.x_change+= x
+    
+    
+    def update(self):
+        
+        self.rect.x+= self.x_change
+        
+        block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
+        for block in block_hit_list:
+            if self.x_change > 0:
+                self.rect.right = block.rect.left
+            else:
+                self.rect.left = block.rect.right
+    
+    
+    def move(self):
+        
+        for event in pygame.event.get():
+            if event.type==pygame.KEYDOWN:  
+                if event.key == pygame.K_LEFT:
+                    self.changespeed(-5)
+                if event.key == pygame.K_RIGHT:
+                    self.changespeed(5)
+                
+            if event.type==pygame.KEYUP:  
+                if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
+                    self.changespeed(0)
+
+
+# view
+class BrickView(ViewElement):
+    
+    def __init__(self, width, height):
+        # TODO
+        super(BrickView,self).__init__()
+        self.width = width
+        self.height = height
+        
+        self.draw()
+    
+    def draw(self):
+        self.surface=pygame.Surface([self.width, self.height])
+        self.image =pygame.image.load('brick.png') 
+        
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        self.surface.blit(self.image,(0,0)) 
+        
+        self.rect = self.surface.get_rect()
+        
+        #self.image.fill(self.White)
+        #self.image.set_colorkey(self.White)
+        #pygame.draw.rect(self.surface, self.Black, [0, 0, self.width, self.height],2)
+        
+class WallView(ViewElement):
+    
+    def __init__(self, x, y, width, height):
+        # TODO
+        super(WallView, self).__init__()
+        
+        self.xpos = x
+        self.ypos = y
+        self.width = width
+        self.height = height
+        
+        self.draw()
+        
+    
+    def draw(self):
+        
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(self.Black)
+        self.rect = self.image.get_rect()
+        self.rect.x = self.xpos
+        self.rect.y = self.ypos
+        
