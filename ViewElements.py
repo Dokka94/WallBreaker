@@ -178,7 +178,7 @@ class BrickView(ViewElement):
         self.surface=pygame.Surface([self.width, self.height])
         self.image =pygame.image.load('brick.png') 
         
-        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        self.image = pygame.transform.scale(self.image, ((int(self.width), self.height))
         self.surface.blit(self.image,(0,0)) 
         
         self.rect = self.surface.get_rect()
