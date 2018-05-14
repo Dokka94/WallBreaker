@@ -8,9 +8,8 @@ class Game:
     White = (255,255,255)
     Yellow = (255,211,25)
 
-    
-    def __init__(self, Screen_Width,Screen_Height ,Screen, num_b,row_num_b, b_distance,Game_Screen_W, Game_Screen_H ):
-        # TODO
+    def __init__(self, Screen_Width, Screen_Height, Screen, num_b, row_num_b, b_distance, Game_Screen_W, Game_Screen_H ):
+        #         # TODO
         ''' self.level = self.loadLevel(level)
         self.balls = []
         self.balls.append(BallController())
@@ -23,7 +22,9 @@ class Game:
         self.row_num_of_bricks = row_num_b
         self.Game_Screen_W = Game_Screen_W
         self.Game_Screen_H = Game_Screen_H
-        
+
+        self.bricks = []
+
     # load level from file
     def loadLevel(self, level):
         # TODO
@@ -48,6 +49,7 @@ class Game:
         Wall_width = 10
         Border = 15
         wall_list = pygame.sprite.Group()
+        self.walls = []
         
         walls = [[Border, Border, self.Game_Screen_W + 2*Wall_width, Wall_width],
                  [Border, Border, Wall_width, self.Game_Screen_H + 2*Wall_width],
@@ -58,13 +60,15 @@ class Game:
             wall = WallView(item[0], item[1], item[2], item[3])
             all_sprite_list.add(wall)
             wall_list.add(wall)
+            self.walls.append(wall)
 
         
         #----BRICKS----
         row=0
         col=0
         i = 0
-        while (i <= self.num_of_bricks \
+
+        while (i <= self.num_of_bricks
                or brick.rect.x + brick.width <= (self.Game_Screen_W + Border + Wall_width) ):
                 
             brick = BrickView(((self.Game_Screen_W)-(self.brick_distance*(self.row_num_of_bricks)+1))/self.row_num_of_bricks,20)
@@ -78,13 +82,16 @@ class Game:
                 row+=1
                 col = 0
             else:
+                brick.xpos = brick.rect.x
+                brick.ypos = brick.rect.y
                 all_sprite_list.add(brick)
+                self.bricks.append(brick)
             i+= 1
             
             
         #----BAT----
-        bat = BatView(Border + Wall_width + self.Game_Screen_W/2-35,\
-                      Border + Wall_width +self.Game_Screen_H-50,70,20)
+        bat = BatView(Border + Wall_width + self.Game_Screen_W/2-35,
+                      Border + Wall_width + self.Game_Screen_H-50, 70, 20)
         bat.walls = wall_list
         all_sprite_list.add(bat)
         
@@ -102,18 +109,10 @@ class Game:
                 if event.type==pygame.QUIT:
                     gameExit=True
                 
-                
-                #----BAT MOVEMENT----
-                if event.type==pygame.KEYDOWN:  
-                    if event.key == pygame.K_LEFT:
-                        bat.changespeed(-5)
-                    if event.key == pygame.K_RIGHT:
-                        bat.changespeed(5)
-                
-                if event.type==pygame.KEYUP:  
-                    if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
-                        bat.changespeed(0)
-                
+                bat.move(event)
+                if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
+                    ball.release()
+            ball.move(self.bricks, self.walls, bat)
             all_sprite_list.update()  
             self.Screen.fill(self.White)
             all_sprite_list.draw(self.Screen)

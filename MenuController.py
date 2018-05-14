@@ -1,6 +1,7 @@
+import pygame
 from wallbreaker import Wallbreaker
 from ViewElements import *
-import pygame
+
 
 
 

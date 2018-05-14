@@ -19,9 +19,9 @@ class Wallbreaker:
     # make a new process
     def newProcess(self, numofBricks, rowNumOfBricks, brickDistance):
         # TODO        
-        Process(self.Screen_Width, self.Screen_Height,\
+        Process(self.Screen_Width, self.Screen_Height,
                 self.Screen, self.Game_Screen_W, self.Game_Screen_H)\
-                .startGame(numofBricks,rowNumOfBricks,brickDistance)
+                .startGame(numofBricks, rowNumOfBricks, brickDistance)
 
     # load a process, and start a game
     def loadProcess(self):
