@@ -169,8 +169,8 @@ class BrickView(ViewElement):
 
     def draw(self):
 
-        self.surface=pygame.Surface([self.width, self.height])
-        self.image =pygame.image.load(self.controller.brick.getTexture())
+        self.surface = pygame.Surface([self.width, self.height])
+        self.image = pygame.image.load(self.controller.brick.getTexture())
 
         self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.surface.blit(self.image,(0,0))
@@ -192,6 +192,8 @@ class BrickView(ViewElement):
         self.rect.y = self.ypos
         """
 
+    def update(self):
+        self.draw()
 class WallView(ViewElement):
 
     def __init__(self, x, y, width, height):

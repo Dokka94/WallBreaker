@@ -133,7 +133,6 @@ class BatController:
 class BrickController:
     def __init__(self, x, y, maxX, maxY, brickString):
 
-
         if brickString == "simple":
             self.brick = Brick()
         elif brickString == "double":
