@@ -79,7 +79,7 @@ class ButtonView(ViewElement):
 # view
 class BallView(ViewElement):
 
-    def __init__(self, x, y, width, height):
+    def __init__(self, x, y, width, height, ballController):
         # TODO
         super(BallView,self).__init__()
         self.xpos = x
@@ -90,8 +90,10 @@ class BallView(ViewElement):
         self.y_change = 0
         self.walls = 0
         self.draw()
-    
+        self.controller = ballController
+
     def draw(self):
+        """
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(self.White)
         self.image.set_colorkey(self.White)
@@ -99,7 +101,16 @@ class BallView(ViewElement):
         self.rect = self.image.get_rect()
         self.rect.x = self.xpos
         self.rect.y = self.ypos
+        """
+        self.surface=pygame.Surface([self.width, self.height])
+        self.image =pygame.image.load(self.controller.ball.getTexture())
 
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        self.surface.blit(self.image,(0,0))
+
+        self.rect = self.surface.get_rect()
+        self.rect.x = self.xpos
+        self.rect.y = self.ypos
 
 # view
 class BatView(ViewElement):

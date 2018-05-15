@@ -8,12 +8,14 @@ class BallController:
     def __init__(self):
         # TODO
         self.ball = Ball()
-        self.ballView = BallView(Constants.Border + Constants.Wall_width + Constants.Game_Screen_W/2-6,
-                                 Constants.Border + Constants.Wall_width + Constants.Game_Screen_H-50-12,12,12)
+
         self.stickedTo = None
         self.x_change = 0
         self.y_change = 0
         self.velocity = 10
+        self.ballView = BallView(Constants.Border + Constants.Wall_width + Constants.Game_Screen_W/2-6,
+                                 Constants.Border + Constants.Wall_width + Constants.Game_Screen_H-50-12,12,12,
+                                 self)
 
     def stickTo(self, bat):
         self.stickedTo = bat
@@ -130,7 +132,7 @@ class BatController:
 # a controller between the model and the view
 class BrickController:
     def __init__(self, x, y, maxX, maxY, brickString):
-        self.brickView = BrickView(x, y, maxX, maxY, self)
+
 
         if brickString == "simple":
             self.brick = Brick()
@@ -139,7 +141,7 @@ class BrickController:
         else:
             # TODO throw an exception
             raise Exception("Not valid brickstring: " + brickString)
-
+        self.brickView = BrickView(x, y, maxX, maxY, self)
 
 
     def hit(self):
