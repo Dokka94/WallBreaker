@@ -8,12 +8,14 @@ class BallController:
     def __init__(self):
         # TODO
         self.ball = Ball()
-        self.ballView = BallView(Constants.Border + Constants.Wall_width + Constants.Game_Screen_W/2-6,
-                                 Constants.Border + Constants.Wall_width + Constants.Game_Screen_H-50-12,12,12)
+
         self.stickedTo = None
         self.x_change = 0
         self.y_change = 0
         self.velocity = 10
+        self.ballView = BallView(Constants.Border + Constants.Wall_width + Constants.Game_Screen_W/2-6,
+                                 Constants.Border + Constants.Wall_width + Constants.Game_Screen_H-50-12,12,12,
+                                 self)
 
     def stickTo(self, bat):
         self.stickedTo = bat
