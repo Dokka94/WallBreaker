@@ -129,10 +129,18 @@ class BatController:
 
 # a controller between the model and the view
 class BrickController:
-    def __init__(self, x, y, maxX, maxY):
-        # TODO
-        self.brick = Brick()
+    def __init__(self, x, y, maxX, maxY, brickString):
         self.brickView = BrickView(x, y, maxX, maxY, self)
+
+        if brickString == "simple":
+            self.brick = Brick()
+        elif brickString == "double":
+            self.brick = DoubleBrick()
+        else:
+            # TODO throw an exception
+            raise Exception("Not valid brickstring: " + brickString)
+
+
 
     def hit(self):
         self.brick.hit()

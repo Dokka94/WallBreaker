@@ -27,8 +27,9 @@ class Level:
         levelFile.close()
 
     def loadBrick(self, brickString, x, y, maxX, maxY):
-        if brickString == "simple":
-            return BrickController(x, y, maxX, maxY)
+        brickTypes = ["simple", "double"]
+        if brickString in brickTypes:
+            return BrickController(x, y, maxX, maxY,brickString)
         else:
             return None
 
