@@ -10,7 +10,7 @@ class MenuController():
     def __init__(self):
         # TODO       
         self.newButton = ButtonView(Constants.Screen_Width/2-85, 250, 170, 70, "New Game")
-        self.loadButton = ButtonView(Constants.Screen_Width/2-85, 350 ,170, 70, "Load Game")
+        self.loadButton = ButtonView(Constants.Screen_Width/2-85, 350, 170, 70, "Load Game")
         self.htpButton = ButtonView(Constants.Screen_Width/2-85, 450, 170, 70, "How to play")
 
         self.Screen = pygame.display.set_mode((Constants.Screen_Width, Constants.Screen_Height))

@@ -1,5 +1,7 @@
 from ModelElements import *
 from ViewElements import *
+from math import sqrt
+
 
 # a controller between the model and the view
 class BallController:
@@ -11,19 +13,20 @@ class BallController:
         self.stickedTo = None
         self.x_change = 0
         self.y_change = 0
+        self.velocity = 10
 
     def stickTo(self, bat):
         self.stickedTo = bat
 
     def release(self):
         self.stickedTo = None
-        self.x_change = -7
-        self.y_change = -5
+        self.x_change = 0
+        self.y_change = -10
 
 
     def isOverlapped(self, controller):
         viewElement = controller.getView()
-        #TODO: it could be easier with pygame spire collide
+        # TODO: it could be easier with pygame spire collide
         ballcenter = (self.ballView.rect.x + self.ballView.width/2, self.ballView.rect.y + self.ballView.height/2)
         elementcenter = (viewElement.rect.x + viewElement.width/2, viewElement.rect.y + viewElement.height/2)
 
@@ -46,6 +49,7 @@ class BallController:
 
     # make the ball move
     def move(self, bricks, walls, bat):
+        # TODO: rect.x is not good, should be changed to getx() MVC
         if self.stickedTo is not None:
             self.ballView.rect.x = self.stickedTo.batView.rect.x + self.stickedTo.batView.width/2 - self.ballView.width / 2
             self.ballView.rect.y = self.stickedTo.batView.rect.y - self.ballView.height
@@ -55,6 +59,7 @@ class BallController:
 
             for brick in bricks:
                 if self.setBallReflect(self.isOverlapped(brick)):
+                    brick.hit()
                     return
 
             for wall in walls.wallViews:
@@ -62,7 +67,15 @@ class BallController:
                     return
 
             if self.setBallReflect(self.isOverlapped(bat)):
+                ballCenterX = self.ballView.rect.x + self.ballView.width / 2
+                batCenterX = bat.getView().rect.x + bat.getView().width / 2
+                diff = batCenterX - ballCenterX
+                self.x_change = - int(diff / bat.getView().width * 9)
+                self.y_change = - sqrt(self.velocity**2 - self.x_change**2)
                 return
+
+    def isOnPlayField(self):
+        return self.ballView.rect.y < Constants.Game_Screen_H
 
     def setBallReflect(self, params):
         reflect = params[0]
@@ -85,27 +98,27 @@ class BallController:
 # a controller between the model and the view
 class BatController:
     def __init__(self):
-        # TODO
         self.bat = Bat()
         self.batView = BatView(Constants.Border + Constants.Wall_width + Constants.Game_Screen_W/2-35,
                                Constants.Border + Constants.Wall_width + Constants.Game_Screen_H-50, 70, 20)
+        self.movementSpeed = 10
 
-    def changespeed(self,x):
-        self.batView.x_change+= x
+    def changespeed(self, x):
+        self.batView.x_change += x
 
     # make the bat move
     def move(self, event):
         if event.type==pygame.KEYDOWN:
             if event.key == pygame.K_LEFT:
-                self.changespeed(-5)
+                self.changespeed(-self.movementSpeed)
             if event.key == pygame.K_RIGHT:
-                self.changespeed(5)
+                self.changespeed(self.movementSpeed)
 
         if event.type==pygame.KEYUP:
             if event.key == pygame.K_LEFT:
-                self.changespeed(5)
+                self.changespeed(self.movementSpeed)
             if event.key == pygame.K_RIGHT:
-                self.changespeed(-5)
+                self.changespeed(-self.movementSpeed)
 
     def setWalls(self, wallController):
         for wallView in wallController.wallViews:

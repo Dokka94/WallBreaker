@@ -17,13 +17,16 @@ class Game:
         self.bat = BatController()
 
         self.balls[0].stickTo(self.bat)
-        self.bat.setWalls(self.walls)
+
         self.screen = screen
 
 
         self.allSpriteList = None
         self.refreshAllSpriteList()
         self.initWalls()
+        self.bat.setWalls(self.walls)
+        self.lives = 3
+        self.won = False
 
     # load level from file
     def loadLevel(self, level):
@@ -41,6 +44,8 @@ class Game:
             self.allSpriteList.add(wallView)
         self.allSpriteList.add(self.bat.batView)
 
+    def looseLife(self):
+        self.lives -= 1
 
     def initWalls(self):
         walls = [[Constants.Border, Constants.Border, Constants.Game_Screen_W + 2 * Constants.Wall_width,
@@ -67,12 +72,13 @@ class Game:
         #----TEXTS----
         font = pygame.font.Font(None, 25)
         #text_score = font.render("Score: ", True, self.Black)
-        text_level = font.render("Level: ", True, Constants.Black)
+        text_level = font.render("Level: " + str(self.level.levelNumber), True, Constants.Black)
+        text_lives = font.render("Lives: ", True, Constants.Black)
         
         
         #----WINDOW----
         gameExit=False
-        while not gameExit:
+        while not gameExit and self.lives > 0 and not self.won:
             for event in pygame.event.get():
                 if event.type==pygame.QUIT:
                     gameExit=True
@@ -83,17 +89,26 @@ class Game:
                         ball.release()
             for ball in self.balls:
                 ball.move(self.level.getBricks(), self.walls, self.bat)
-
+                self.level.deleteBrokenBricks()
+                self.won = self.level.isReady()
+                if not ball.isOnPlayField():
+                    ball.stickTo(self.bat)
+                    self.looseLife()
             self.refreshAllSpriteList()
             self.allSpriteList.update()
             self.screen.fill(Constants.White)
             self.allSpriteList.draw(self.screen)
             #self.Screen.blit(text_score, [700,150])
-            self.screen.blit(text_level, [700,150])
+            self.screen.blit(text_level, [700, 150])
+
+            text_lives = font.render("Lives: " + str(self.lives), True, Constants.Black)
+            self.screen.blit(text_lives, [700, 250])
             
             pygame.display.update()
             clock.tick(15)
-            
-        pygame.quit()
-        quit()
+        if gameExit:
+            pygame.quit()
+            quit()
+        else:
+            return self.won
 

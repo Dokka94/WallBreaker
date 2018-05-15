@@ -22,7 +22,7 @@ class Brick:
     def __init__(self):
         # TODO
         self.textures = ['brick.png']
-        self.hitRate = 0
+        self.hitRate = 1
         self.hitCount = 0
         self.broken = False
 
