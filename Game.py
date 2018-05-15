@@ -1,105 +1,73 @@
 from Controllers import *
 from ViewElements import *
-
+from Constants import *
+from Level import *
 # the loadGame() calls it
 class Game:
     
-    Black = (0,0,0)
-    White = (255,255,255)
-    Yellow = (255,211,25)
 
-    def __init__(self, Screen_Width, Screen_Height, Screen, num_b, row_num_b, b_distance, Game_Screen_W, Game_Screen_H ):
+
+    #def __init__(self, screen, num_b, row_num_b, b_distance):
         #         # TODO
-        ''' self.level = self.loadLevel(level)
+    def __init__(self, level, screen):
+        self.level = Level(level)
+        self.walls = WallController()
         self.balls = []
         self.balls.append(BallController())
-        self.bat = BatController()'''
-        self.Screen = Screen
-        self.Screen_Width = Screen_Width
-        self.Screen_height = Screen_Height
-        self.num_of_bricks = num_b
-        self.brick_distance = b_distance
-        self.row_num_of_bricks = row_num_b
-        self.Game_Screen_W = Game_Screen_W
-        self.Game_Screen_H = Game_Screen_H
+        self.bat = BatController()
 
-        self.bricks = []
+        self.balls[0].stickTo(self.bat)
+        self.bat.setWalls(self.walls)
+        self.screen = screen
+
+
+        self.allSpriteList = None
+        self.refreshAllSpriteList()
+        self.initWalls()
 
     # load level from file
     def loadLevel(self, level):
         # TODO
         pass
 
+    def refreshAllSpriteList(self):
+        self.allSpriteList = pygame.sprite.Group()
+        for brickController in self.level.getBricks():
+            if brickController is not None:
+                self.allSpriteList.add(brickController.brickView)
+        for ballController in self.balls:
+            self.allSpriteList.add(ballController.ballView)
+        for wallView in self.walls.wallViews:
+            self.allSpriteList.add(wallView)
+        self.allSpriteList.add(self.bat.batView)
+
+
+    def initWalls(self):
+        walls = [[Constants.Border, Constants.Border, Constants.Game_Screen_W + 2 * Constants.Wall_width,
+                  Constants.Wall_width],
+                 [Constants.Border, Constants.Border, Constants.Wall_width,
+                  Constants.Game_Screen_H + 2 * Constants.Wall_width],
+                 [Constants.Border, Constants.Game_Screen_H + Constants.Wall_width + Constants.Border,
+                  Constants.Game_Screen_W + 2 * Constants.Wall_width,
+                  Constants.Wall_width],
+                 [Constants.Game_Screen_W + Constants.Wall_width + Constants.Border, Constants.Border,
+                  Constants.Wall_width,
+                  Constants.Game_Screen_H + 2 * Constants.Wall_width]]
+
+        for item in walls:
+            self.walls.addWall(item[0], item[1], item[2], item[3])
+
     # the actual game-mechanism
-    def nextStep(self):
+    def start(self):
         # TODO
         
         pygame.display.set_caption('Wall-Breaker')
         clock=pygame.time.Clock()
         
-        all_sprite_list = pygame.sprite.Group()
-        
         #----TEXTS----
         font = pygame.font.Font(None, 25)
         #text_score = font.render("Score: ", True, self.Black)
-        text_level = font.render("Level: ", True, self.Black)
-        
-        
-        #----WALLS----       
-        Wall_width = 10
-        Border = 15
-        wall_list = pygame.sprite.Group()
-        self.walls = []
-        
-        walls = [[Border, Border, self.Game_Screen_W + 2*Wall_width, Wall_width],
-                 [Border, Border, Wall_width, self.Game_Screen_H + 2*Wall_width],
-                 [Border, self.Game_Screen_H + Wall_width + Border, self.Game_Screen_W + 2*Wall_width, Wall_width],
-                 [self.Game_Screen_W + Wall_width + Border, Border, Wall_width, self.Game_Screen_H + 2*Wall_width]]
- 
-        for item in walls:
-            wall = WallView(item[0], item[1], item[2], item[3])
-            all_sprite_list.add(wall)
-            wall_list.add(wall)
-            self.walls.append(wall)
-
-        
-        #----BRICKS----
-        row=0
-        col=0
-        i = 0
-
-        while (i <= self.num_of_bricks
-               or brick.rect.x + brick.width <= (self.Game_Screen_W + Border + Wall_width) ):
-                
-            brick = BrickView(((self.Game_Screen_W)-(self.brick_distance*(self.row_num_of_bricks)+1))/self.row_num_of_bricks,20)
-            
-            brick.rect.x = self.brick_distance + col*(brick.width+self.brick_distance) + Border + Wall_width
-            brick.rect.y = self.brick_distance + row*(brick.height+self.brick_distance) + Border + Wall_width
-            
-            col += 1
-            
-            if brick.rect.x + brick.width >= (self.Game_Screen_W + Border + Wall_width):
-                row+=1
-                col = 0
-            else:
-                brick.xpos = brick.rect.x
-                brick.ypos = brick.rect.y
-                all_sprite_list.add(brick)
-                self.bricks.append(brick)
-            i+= 1
-            
-            
-        #----BAT----
-        bat = BatView(Border + Wall_width + self.Game_Screen_W/2-35,
-                      Border + Wall_width + self.Game_Screen_H-50, 70, 20)
-        bat.walls = wall_list
-        all_sprite_list.add(bat)
-        
-            
-        #----BALL----
-        ball = BallView(Border + Wall_width + self.Game_Screen_W/2-6,\
-                        Border + Wall_width +self.Game_Screen_H-50-12,12,12)      
-        all_sprite_list.add(ball)
+        text_level = font.render("Level: ", True, Constants.Black)
         
         
         #----WINDOW----
@@ -109,15 +77,19 @@ class Game:
                 if event.type==pygame.QUIT:
                     gameExit=True
                 
-                bat.move(event)
+                self.bat.move(event)
                 if event.type == pygame.KEYDOWN and event.key == pygame.K_UP:
-                    ball.release()
-            ball.move(self.bricks, self.walls, bat)
-            all_sprite_list.update()  
-            self.Screen.fill(self.White)
-            all_sprite_list.draw(self.Screen)
+                    for ball in self.balls:
+                        ball.release()
+            for ball in self.balls:
+                ball.move(self.level.getBricks(), self.walls, self.bat)
+
+            self.refreshAllSpriteList()
+            self.allSpriteList.update()
+            self.screen.fill(Constants.White)
+            self.allSpriteList.draw(self.screen)
             #self.Screen.blit(text_score, [700,150])
-            self.Screen.blit(text_level, [700,150])
+            self.screen.blit(text_level, [700,150])
             
             pygame.display.update()
             clock.tick(15)

@@ -4,7 +4,7 @@
 class Ball:
     def __init__(self):
         # TODO
-        self.textures = [Texture()]
+        self.textures = []
         self.velocity = 0.0
         self.angle = 0.0
 
@@ -13,7 +13,7 @@ class Ball:
 class Bat:
     def __init__(self):
         # TODO
-        self.textures = [Texture()]
+        self.textures = []
         self.width = 0
 
 
@@ -21,7 +21,15 @@ class Bat:
 class Brick:
     def __init__(self):
         # TODO
-        self.textures = [Texture()]
+        self.textures = ['brick.png']
         self.hitRate = 0
         self.hitCount = 0
         self.broken = False
+
+    def getTexture(self):
+        return self.textures[self.hitCount]
+
+    def hit(self):
+        self.hitCount+=1
+        if self.hitCount == self.hitRate:
+            self.broken = True

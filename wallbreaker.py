@@ -2,26 +2,20 @@
 from Game import *
 from Process import *
 from ViewElements import *
+from Constants import *
 
 class Wallbreaker:
-    
-    Game_Screen_W = 600
-    Game_Screen_H = 600
-    
-    def __init__(self, Screen_Width, Screen_Height, Screen):
+
+    def __init__(self, Screen):
         ''' self.savedProcesses = self.loadProcesses()
         self.levels = self.loadLevels()'''
-        self.Screen_Width = Screen_Width
-        self.Screen_Height = Screen_Height
-        self.Screen = Screen
+        self.screen = Screen
 
         
     # make a new process
     def newProcess(self, numofBricks, rowNumOfBricks, brickDistance):
         # TODO        
-        Process(self.Screen_Width, self.Screen_Height,
-                self.Screen, self.Game_Screen_W, self.Game_Screen_H)\
-                .startGame(numofBricks, rowNumOfBricks, brickDistance)
+        Process(self.screen).startGame(numofBricks, rowNumOfBricks, brickDistance)
 
     # load a process, and start a game
     def loadProcess(self):
@@ -41,10 +35,10 @@ class Wallbreaker:
         Wall_width = 10
         Border_H = 15
 
-        walls = [[self.Screen_Width/2-self.Game_Screen_W/2, Border_H, self.Game_Screen_W + 2*Wall_width, Wall_width],
-                 [self.Screen_Width/2-self.Game_Screen_W/2, Border_H, Wall_width, self.Game_Screen_H + 2*Wall_width],
-                 [self.Screen_Width/2-self.Game_Screen_W/2, self.Game_Screen_H + Wall_width + Border_H, self.Game_Screen_W + 2*Wall_width, Wall_width],
-                 [self.Screen_Width/2+Wall_width+self.Game_Screen_W/2, Border_H, Wall_width, self.Game_Screen_H + 2*Wall_width]]
+        walls = [[Constants.Screen_Width/2-Constants.Game_Screen_W/2, Border_H, Constants.Game_Screen_W + 2*Wall_width, Wall_width],
+                 [Constants.Screen_Width/2-Constants.Game_Screen_W/2, Border_H, Wall_width, Constants.Game_Screen_H + 2*Wall_width],
+                 [Constants.Screen_Width/2-Constants.Game_Screen_W/2, Constants.Game_Screen_H + Wall_width + Border_H, Constants.Game_Screen_W + 2*Wall_width, Wall_width],
+                 [Constants.Screen_Width/2+Wall_width+Constants.Game_Screen_W/2, Border_H, Wall_width, Constants.Game_Screen_H + 2*Wall_width]]
  
         for item in walls:
             wall = WallView(item[0], item[1], item[2], item[3])
@@ -55,7 +49,7 @@ class Wallbreaker:
         i=0
         List = self.loadProcesses()
         for key, value in List.items():
-            self.loadButton = ButtonView(self.Screen_Width/2-250, 100 + i*60 ,500, 50, str(key))
+            self.loadButton = ButtonView(Constants.Screen_Width/2-250, 100 + i*60 ,500, 50, str(key))
             i+=1
             all_sprite_list.add(self.loadButton)
             
@@ -69,14 +63,14 @@ class Wallbreaker:
                 
             
             all_sprite_list.update()  
-            self.Screen.fill((255,255,255))
-            all_sprite_list.draw(self.Screen)
+            self.screen.fill((255,255,255))
+            all_sprite_list.draw(self.screen)
             
             #if self.loadButton.click() and ...
             
             
-            self.Screen.blit(text_title, [self.Screen_Width/2-70,40])
-            self.Screen.blit(text_click, [self.Screen_Width/2-60,70])
+            self.screen.blit(text_title, [Constants.Screen_Width/2-70,40])
+            self.screen.blit(text_click, [Constants.Screen_Width/2-60,70])
             
             pygame.display.update()
             clock.tick(15)

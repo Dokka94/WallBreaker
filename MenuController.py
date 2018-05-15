@@ -1,27 +1,20 @@
 import pygame
 from wallbreaker import Wallbreaker
 from ViewElements import *
-
-
+from Constants import *
 
 
 # the main Controller
 class MenuController():
-            
-    Screen_Width = 900
-    Screen_Height = 650
-    White = (255,255,255)
-    Black = (0,0,0)
-
     
     def __init__(self):
         # TODO       
-        self.newButton = ButtonView(self.Screen_Width/2-85, 250, 170, 70, "New Game")
-        self.loadButton = ButtonView(self.Screen_Width/2-85, 350 ,170, 70, "Load Game")
-        self.htpButton = ButtonView(self.Screen_Width/2-85, 450, 170, 70, "How to play")
+        self.newButton = ButtonView(Constants.Screen_Width/2-85, 250, 170, 70, "New Game")
+        self.loadButton = ButtonView(Constants.Screen_Width/2-85, 350 ,170, 70, "Load Game")
+        self.htpButton = ButtonView(Constants.Screen_Width/2-85, 450, 170, 70, "How to play")
 
-        self.Screen = pygame.display.set_mode((self.Screen_Width, self.Screen_Height))
-        self.wallBreaker = Wallbreaker(self.Screen_Width, self.Screen_Height, self.Screen)
+        self.Screen = pygame.display.set_mode((Constants.Screen_Width, Constants.Screen_Height))
+        self.wallBreaker = Wallbreaker(self.Screen)
         
            
     
@@ -43,9 +36,8 @@ class MenuController():
                 if event.type==pygame.QUIT:
                     pygame.quit()
                     quit()
-                       
                 
-            self.Screen.fill(self.White)
+            self.Screen.fill(Constants.White)
             self.Screen.blit(intro_im,(60,10))
             
             all_sprite_list.draw(self.Screen)

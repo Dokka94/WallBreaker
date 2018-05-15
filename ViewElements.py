@@ -1,6 +1,7 @@
 import pygame
 import pygame.font
 from pickle import FALSE
+from Constants import *
 
 # interface
 class ViewElement(pygame.sprite.Sprite):
@@ -91,7 +92,6 @@ class BallView(ViewElement):
         self.draw()
     
     def draw(self):
-        
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(self.White)
         self.image.set_colorkey(self.White)
@@ -100,66 +100,7 @@ class BallView(ViewElement):
         self.rect.x = self.xpos
         self.rect.y = self.ypos
 
-    def isOverlapped(self, viewElement):
-        ballcenter = (self.rect.x + self.width/2, self.rect.y + self.height/2)
-        elementcenter = (viewElement.rect.x + viewElement.width/2, viewElement.rect.y + viewElement.height/2)
 
-        diffy = elementcenter[1] - ballcenter[1]
-        diffx = elementcenter[0] - ballcenter[0]
-
-        if viewElement.rect.x <= ballcenter[0] <= viewElement.rect.x + viewElement.width:
-            if abs(diffy) <= viewElement.height / 2 + self.height / 2:
-                if diffy > 0:
-                    return True, True, self.rect.x, viewElement.rect.y - self.height
-                else:
-                    return True, True, self.rect.x, viewElement.rect.y + viewElement.height
-        if viewElement.rect.y <= ballcenter[1] <= viewElement.rect.y + viewElement.height:
-            if abs(diffx) <= viewElement.width / 2 + self.width / 2:
-                if diffx > 0:
-                    return True, False, viewElement.rect.x - self.width, self.rect.y
-                else:
-                    return True, False, viewElement.rect.x + viewElement.width, self.rect.y
-        return False, None, None, None
-
-    def changespeed(self,x):
-        pass
-
-    def move(self, bricks, walls, bat):
-        self.rect.x += self.x_change
-        self.rect.y += self.y_change
-
-        for brick in bricks:
-            if self.setBallReflect(self.isOverlapped(brick)):
-                return
-
-        for wall in walls:
-            if self.setBallReflect(self.isOverlapped(wall)):
-                return
-
-        if self.setBallReflect(self.isOverlapped(bat)):
-            return
-
-
-    def release(self):
-        self.x_change = -5
-        self.y_change = -7
-
-    def setBallReflect(self, params):
-        reflect = params[0]
-        horizontal = params[1]
-        newx = params[2]
-        newy = params[3]
-        if reflect:
-            if horizontal:
-                self.x_change = self.x_change
-                self.y_change = - self.y_change
-            else:
-                self.x_change = - self.x_change
-                self.y_change = self.y_change
-            self.rect.x = newx
-            self.rect.y = newy
-            return True
-        return False
 # view
 class BatView(ViewElement):
 
@@ -172,7 +113,7 @@ class BatView(ViewElement):
         self.height = height
         self.rect = 0
         self.x_change = 0
-        self.walls = None
+        self.walls = []
         self.draw()
 
     def draw(self):
@@ -184,14 +125,11 @@ class BatView(ViewElement):
         self.rect.x = self.xpos
         self.rect.y = self.ypos
 
-
-    def changespeed(self,x):
-        # TODO
-        self.x_change+= x
+    def addWall(self, wallView):
+        self.walls.append(wallView)
 
 
     def update(self):
-
         self.rect.x+= self.x_change
 
         block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
@@ -202,65 +140,65 @@ class BatView(ViewElement):
                 self.rect.left = block.rect.right
 
 
-    def move(self, event):
-
-        #for event in pygame.event.get():
-        if event.type==pygame.KEYDOWN:
-            if event.key == pygame.K_LEFT:
-                self.changespeed(-5)
-            if event.key == pygame.K_RIGHT:
-                self.changespeed(5)
-
-        if event.type==pygame.KEYUP:
-            if event.key == pygame.K_LEFT:
-                self.changespeed(5)
-            if event.key == pygame.K_RIGHT:
-                self.changespeed(-5)
-
-
 # view
 class BrickView(ViewElement):
 
-    def __init__(self, width, height):
+    def __init__(self, x, y, maxX, maxY, brickController):
         # TODO
         super(BrickView,self).__init__()
-        self.width = width
-        self.height = height
+        self.height = int(Constants.Game_Screen_H / 3 * 2 / maxY)
+        self.width = int(Constants.Game_Screen_W / maxX)
+
+        self.xpos = self.width * x + Constants.Wall_width + Constants.Border
+        self.ypos = self.height * y + Constants.Wall_width + Constants.Border
+
+        self.controller = brickController
 
         self.draw()
 
     def draw(self):
-        self.surface=pygame.Surface([self.width, self.height])
-        self.image =pygame.image.load('brick.png')
 
-        self.image = pygame.transform.scale(self.image, (int (self.width), self.height))
+        self.surface=pygame.Surface([self.width, self.height])
+        self.image =pygame.image.load(self.controller.brick.getTexture())
+
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
         self.surface.blit(self.image,(0,0))
 
         self.rect = self.surface.get_rect()
+        self.rect.x = self.xpos
+        self.rect.y = self.ypos
 
         #self.image.fill(self.White)
         #self.image.set_colorkey(self.White)
         #pygame.draw.rect(self.surface, self.Black, [0, 0, self.width, self.height],2)
+        """
+        self.image = pygame.Surface([self.width, self.height])
+        self.image.fill(self.White)
+        self.image.set_colorkey(self.White)
+        pygame.draw.rect(self.image, self.Black, [0, 0, self.width, self.height], 2)
+        self.rect = self.image.get_rect()
+        self.rect.x = self.xpos
+        self.rect.y = self.ypos
+        """
 
 class WallView(ViewElement):
 
     def __init__(self, x, y, width, height):
         # TODO
         super(WallView, self).__init__()
-
         self.xpos = x
         self.ypos = y
         self.width = width
         self.height = height
-
         self.draw()
 
-
     def draw(self):
-
         self.image = pygame.Surface([self.width, self.height])
         self.image.fill(self.Black)
         self.rect = self.image.get_rect()
         self.rect.x = self.xpos
         self.rect.y = self.ypos
+
+    def getView(self):
+        return self
 
