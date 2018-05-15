@@ -4,7 +4,6 @@ from Controllers import *
 # the gamefield with bricks
 class Level:
     def __init__(self, level):
-        # TODO
         self.levelNumber = level
         self.bricks = []
         self.loadLevel(self.levelNumber)
@@ -15,11 +14,11 @@ class Level:
         pass
 
     def loadLevel(self, level):
-        levelFile = open(str(level) + "level.txt")
+        levelFile = open(str(level) + "level.csv")
         rows = levelFile.readlines()
         for rowIndex in range(0, len(rows)):
             brickRow = []
-            brickStrings = rows[rowIndex].split(',')
+            brickStrings = rows[rowIndex].split(';')
             for brickIndex in range(0, len(brickStrings)):
                 brickRow.append(self.loadBrick(brickStrings[brickIndex].strip(),
                                                brickIndex, rowIndex,  len(brickStrings), len(rows)))
@@ -27,7 +26,7 @@ class Level:
         levelFile.close()
 
     def loadBrick(self, brickString, x, y, maxX, maxY):
-        brickTypes = ["simple", "double"]
+        brickTypes = ["simple", "double","triple"]
         if brickString in brickTypes:
             return BrickController(x, y, maxX, maxY,brickString)
         else:

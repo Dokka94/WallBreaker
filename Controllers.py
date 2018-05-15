@@ -6,7 +6,6 @@ from math import sqrt
 # a controller between the model and the view
 class BallController:
     def __init__(self):
-        # TODO
         self.ball = Ball()
 
         self.stickedTo = None
@@ -26,7 +25,7 @@ class BallController:
         self.y_change = -10
 
 
-    def isOverlapped(self, controller):
+    def isOverlapped(self,controller):
         viewElement = controller.getView()
         # TODO: it could be easier with pygame spire collide
         ballcenter = (self.ballView.rect.x + self.ballView.width/2, self.ballView.rect.y + self.ballView.height/2)
@@ -48,6 +47,7 @@ class BallController:
                 else:
                     return True, False, viewElement.rect.x + viewElement.width, self.ballView.rect.y
         return False, None, None, None
+
 
     # make the ball move
     def move(self, bricks, walls, bat):
@@ -101,9 +101,10 @@ class BallController:
 class BatController:
     def __init__(self):
         self.bat = Bat()
-        self.batView = BatView(Constants.Border + Constants.Wall_width + Constants.Game_Screen_W/2-35,
-                               Constants.Border + Constants.Wall_width + Constants.Game_Screen_H-50, 70, 20)
         self.movementSpeed = 10
+        self.batView = BatView(Constants.Border + Constants.Wall_width + Constants.Game_Screen_W/2-35,
+                               Constants.Border + Constants.Wall_width + Constants.Game_Screen_H-50, 70, 20,
+                               self)
 
     def changespeed(self, x):
         self.batView.x_change += x
@@ -137,8 +138,9 @@ class BrickController:
             self.brick = Brick()
         elif brickString == "double":
             self.brick = DoubleBrick()
+        elif brickString == "triple":
+            self.brick = TripleBrick()
         else:
-            # TODO throw an exception
             raise Exception("Not valid brickstring: " + brickString)
         self.brickView = BrickView(x, y, maxX, maxY, self)
 

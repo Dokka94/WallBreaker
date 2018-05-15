@@ -4,18 +4,21 @@
 class Ball:
     def __init__(self):
         # TODO
-        self.textures = []
+        self.textures = ['ball_normal2.png']
         self.velocity = 0.0
         self.angle = 0.0
-
+    def getTexture(self):
+        return self.textures[0]
 
 # model
 class Bat:
     def __init__(self):
         # TODO
-        self.textures = []
+        self.textures = ['bat.png']
         self.width = 0
 
+    def getTexture(self):
+        return self.textures[0]
 
 # model
 class Brick:
@@ -39,3 +42,9 @@ class DoubleBrick(Brick):
         super(DoubleBrick, self).__init__()
         self.textures = ['double.png', 'double_broken.png']
         self.hitRate = 2
+
+class TripleBrick(Brick):
+    def __init__(self):
+        super(TripleBrick, self).__init__()
+        self.textures = ['triple.png', 'triple_broke.png', 'triple_broken.png']
+        self.hitRate = 3

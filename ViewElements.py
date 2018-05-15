@@ -80,7 +80,6 @@ class ButtonView(ViewElement):
 class BallView(ViewElement):
 
     def __init__(self, x, y, width, height, ballController):
-        # TODO
         super(BallView,self).__init__()
         self.xpos = x
         self.ypos = y
@@ -89,19 +88,11 @@ class BallView(ViewElement):
         self.x_change = 0
         self.y_change = 0
         self.walls = 0
-        self.draw()
         self.controller = ballController
+        self.draw()
+
 
     def draw(self):
-        """
-        self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(self.White)
-        self.image.set_colorkey(self.White)
-        pygame.draw.ellipse(self.image, self.Black, [0, 0, self.width, self.height],1)
-        self.rect = self.image.get_rect()
-        self.rect.x = self.xpos
-        self.rect.y = self.ypos
-        """
         self.surface=pygame.Surface([self.width, self.height])
         self.image =pygame.image.load(self.controller.ball.getTexture())
 
@@ -115,8 +106,7 @@ class BallView(ViewElement):
 # view
 class BatView(ViewElement):
 
-    def __init__(self, x, y, width, height):
-        # TODO
+    def __init__(self, x, y, width, height, batController):
         super(BatView,self).__init__()
         self.xpos = x
         self.ypos = y
@@ -124,24 +114,26 @@ class BatView(ViewElement):
         self.height = height
         self.rect = 0
         self.x_change = 0
+        self.controller = batController
         self.walls = pygame.sprite.Group()
         self.draw()
 
     def draw(self):
-        self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(self.White)
-        self.image.set_colorkey(self.White)
-        pygame.draw.rect(self.image, self.Black, [0, 0, self.width, self.height], 2)
-        self.rect = self.image.get_rect()
+        self.surface = pygame.Surface([self.width, self.height])
+        self.image = pygame.image.load(self.controller.bat.getTexture())
+
+        self.image = pygame.transform.scale(self.image, (self.width, self.height))
+        self.surface.blit(self.image, (0, 0))
+
+        self.rect = self.surface.get_rect()
         self.rect.x = self.xpos
         self.rect.y = self.ypos
 
     def addWall(self, wallView):
         self.walls.add(wallView)
 
-
     def update(self):
-        self.rect.x+= self.x_change
+        self.rect.x += self.x_change
 
         block_hit_list = pygame.sprite.spritecollide(self, self.walls, False)
         for block in block_hit_list:
@@ -155,7 +147,6 @@ class BatView(ViewElement):
 class BrickView(ViewElement):
 
     def __init__(self, x, y, maxX, maxY, brickController):
-        # TODO
         super(BrickView,self).__init__()
         self.height = int(Constants.Game_Screen_H / 3 * 2 / maxY)
         self.width = int(Constants.Game_Screen_W / maxX)
@@ -179,18 +170,6 @@ class BrickView(ViewElement):
         self.rect.x = self.xpos
         self.rect.y = self.ypos
 
-        #self.image.fill(self.White)
-        #self.image.set_colorkey(self.White)
-        #pygame.draw.rect(self.surface, self.Black, [0, 0, self.width, self.height],2)
-        """
-        self.image = pygame.Surface([self.width, self.height])
-        self.image.fill(self.White)
-        self.image.set_colorkey(self.White)
-        pygame.draw.rect(self.image, self.Black, [0, 0, self.width, self.height], 2)
-        self.rect = self.image.get_rect()
-        self.rect.x = self.xpos
-        self.rect.y = self.ypos
-        """
 
     def update(self):
         self.draw()
@@ -214,4 +193,3 @@ class WallView(ViewElement):
 
     def getView(self):
         return self
-

@@ -5,10 +5,9 @@ from Constants import *
 
 
 # the main Controller
-class MenuController():
+class MenuController:
     
     def __init__(self):
-        # TODO       
         self.newButton = ButtonView(Constants.Screen_Width/2-85, 250, 170, 70, "New Game")
         self.loadButton = ButtonView(Constants.Screen_Width/2-85, 350, 170, 70, "Load Game")
         self.htpButton = ButtonView(Constants.Screen_Width/2-85, 450, 170, 70, "How to play")
@@ -21,19 +20,19 @@ class MenuController():
     def gui(self):
         
         pygame.display.set_caption('Wall-Breaker')
-        clock=pygame.time.Clock()
-        intro_im=pygame.image.load('wall.png')
+        clock = pygame.time.Clock()
+        intro_im = pygame.image.load('wall.png')
         
         all_sprite_list = pygame.sprite.Group()
         all_sprite_list.add(self.newButton)
         all_sprite_list.add(self.loadButton)
         all_sprite_list.add(self.htpButton)
         
-        intro=True
+        intro = True
         
         while intro:
             for event in pygame.event.get():
-                if event.type==pygame.QUIT:
+                if event.type == pygame.QUIT:
                     pygame.quit()
                     quit()
                 
@@ -45,7 +44,7 @@ class MenuController():
             all_sprite_list.update()         
             
             if self.newButton.click():
-                self.wallBreaker.newProcess(50,11,3)
+                self.wallBreaker.newProcess(50, 11, 3)
             if self.loadButton.click():
                 self.wallBreaker.loadProcess()
                 
