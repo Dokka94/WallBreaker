@@ -3,10 +3,13 @@ from Game import *
 # kind of a saved game
 class Process:
     
-    def __init__(self, screen):
+    def __init__(self, screen, name):
         # TODO
         self.level = 0
-        self.name = "Example"
+        if name == "":
+            self.name = "None"
+        else:
+            self.name = name
         self.settings = None
         self.screen = screen
 
