@@ -21,7 +21,7 @@ class Bat:
 class Brick:
     def __init__(self):
         # TODO
-        self.textures = ['brick.png']
+        self.textures = ['simple_white.png']
         self.hitRate = 0
         self.hitCount = 0
         self.broken = False
