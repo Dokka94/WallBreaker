@@ -34,7 +34,7 @@ class Brick:
         if self.hitCount == self.hitRate:
             self.broken = True
 
-class DoubleBrick:
+class DoubleBrick(Brick):
     def __init__(self):
         super(DoubleBrick, self).__init__()
         self.textures = ['double.png', 'double_broken.png']
