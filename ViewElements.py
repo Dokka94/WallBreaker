@@ -113,7 +113,7 @@ class BatView(ViewElement):
         self.height = height
         self.rect = 0
         self.x_change = 0
-        self.walls = []
+        self.walls = pygame.sprite.Group()
         self.draw()
 
     def draw(self):
@@ -126,7 +126,7 @@ class BatView(ViewElement):
         self.rect.y = self.ypos
 
     def addWall(self, wallView):
-        self.walls.append(wallView)
+        self.walls.add(wallView)
 
 
     def update(self):

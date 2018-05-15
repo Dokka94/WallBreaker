@@ -39,3 +39,13 @@ class Level:
                 if brick is not None:
                     result.append(brick)
         return result
+
+    def deleteBrokenBricks(self):
+        for brickListIndex in range(0,len(self.bricks)):
+            for brickIndex in range(0,len(self.bricks[brickListIndex])):
+                brickController = self.bricks[brickListIndex][brickIndex]
+                if brickController is not None and brickController.brick.broken:
+                    self.bricks[brickListIndex][brickIndex] = None
+
+    def isReady(self):
+        return len(self.getBricks()) == 0

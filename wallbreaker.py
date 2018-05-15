@@ -15,7 +15,7 @@ class Wallbreaker:
     # make a new process
     def newProcess(self, numofBricks, rowNumOfBricks, brickDistance):
         # TODO        
-        Process(self.screen).startGame(numofBricks, rowNumOfBricks, brickDistance)
+        Process(self.screen).startGame()
 
     # load a process, and start a game
     def loadProcess(self):
@@ -67,10 +67,9 @@ class Wallbreaker:
             all_sprite_list.draw(self.screen)
             
             #if self.loadButton.click() and ...
-            
-            
-            self.screen.blit(text_title, [Constants.Screen_Width/2-70,40])
-            self.screen.blit(text_click, [Constants.Screen_Width/2-60,70])
+
+            self.screen.blit(text_title, [Constants.Screen_Width/2-70, 40])
+            self.screen.blit(text_click, [Constants.Screen_Width/2-60, 70])
             
             pygame.display.update()
             clock.tick(15)
