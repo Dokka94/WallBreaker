@@ -160,6 +160,8 @@ class BrickController:
 
     def hit(self):
         self.brick.hit()
+        if not self.brick.broken:
+            self.getView().draw()
 
     def getView(self):
         return self.brickView
