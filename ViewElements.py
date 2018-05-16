@@ -103,6 +103,17 @@ class BallView(ViewElement):
         self.rect.x = self.xpos
         self.rect.y = self.ypos
 
+    def getx(self):
+        return self.rect.x
+
+    def gety(self):
+        return self.rect.y
+
+    def setx(self,x):
+        self.rect.x = x
+
+    def sety(self,y):
+        self.rect.y = y
 # view
 class BatView(ViewElement):
 
@@ -141,6 +152,17 @@ class BatView(ViewElement):
                 self.rect.right = block.rect.left
             else:
                 self.rect.left = block.rect.right
+    def getx(self):
+        return self.rect.x
+
+    def gety(self):
+        return self.rect.y
+
+    def setx(self,x):
+        self.rect.x = x
+
+    def sety(self,y):
+        self.rect.y = y
 
 
 # view
@@ -173,6 +195,19 @@ class BrickView(ViewElement):
 
     def update(self):
         self.draw()
+
+    def getx(self):
+        return self.rect.x
+
+    def gety(self):
+        return self.rect.y
+
+    def setx(self,x):
+        self.rect.x = x
+
+    def sety(self,y):
+        self.rect.y = y
+
 class WallView(ViewElement):
 
     def __init__(self, x, y, width, height):
@@ -193,3 +228,15 @@ class WallView(ViewElement):
 
     def getView(self):
         return self
+
+    def getx(self):
+        return self.rect.x
+
+    def gety(self):
+        return self.rect.y
+
+    def setx(self,x):
+        self.rect.x = x
+
+    def sety(self,y):
+        self.rect.y = y

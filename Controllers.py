@@ -28,56 +28,69 @@ class BallController:
     def isOverlapped(self,controller):
         viewElement = controller.getView()
         # TODO: it could be easier with pygame spire collide
-        ballcenter = (self.ballView.rect.x + self.ballView.width/2, self.ballView.rect.y + self.ballView.height/2)
-        elementcenter = (viewElement.rect.x + viewElement.width/2, viewElement.rect.y + viewElement.height/2)
+        ballcenter = (self.ballView.getx() + self.ballView.width/2, self.ballView.gety() + self.ballView.height/2)
+        elementcenter = (viewElement.getx() + viewElement.width/2, viewElement.gety() + viewElement.height/2)
 
         diffy = elementcenter[1] - ballcenter[1]
         diffx = elementcenter[0] - ballcenter[0]
 
-        if viewElement.rect.x <= ballcenter[0] <= viewElement.rect.x + viewElement.width:
+        if viewElement.getx() <= ballcenter[0] <= viewElement.getx() + viewElement.width:
             if abs(diffy) <= viewElement.height / 2 + self.ballView.height / 2:
                 if diffy > 0:
-                    return True, True, self.ballView.rect.x, viewElement.rect.y - self.ballView.height
+                    return True, True, self.ballView.getx(), viewElement.gety() - self.ballView.height
                 else:
-                    return True, True, self.ballView.rect.x, viewElement.rect.y + viewElement.height
-        if viewElement.rect.y <= ballcenter[1] <= viewElement.rect.y + viewElement.height:
+                    return True, True, self.ballView.getx(), viewElement.gety() + viewElement.height
+        if viewElement.gety() <= ballcenter[1] <= viewElement.gety() + viewElement.height:
             if abs(diffx) <= viewElement.width / 2 + self.ballView.width / 2:
                 if diffx > 0:
-                    return True, False, viewElement.rect.x - self.ballView.width, self.ballView.rect.y
+                    return True, False, viewElement.getx() - self.ballView.width, self.ballView.gety()
                 else:
-                    return True, False, viewElement.rect.x + viewElement.width, self.ballView.rect.y
+                    return True, False, viewElement.getx() + viewElement.width, self.ballView.gety()
         return False, None, None, None
 
 
     # make the ball move
     def move(self, bricks, walls, bat):
-        # TODO: rect.x is not good, should be changed to getx() MVC
+        # TODO: getx() is not good, should be changed to getx() MVC
         if self.stickedTo is not None:
-            self.ballView.rect.x = self.stickedTo.batView.rect.x + self.stickedTo.batView.width/2 - self.ballView.width / 2
-            self.ballView.rect.y = self.stickedTo.batView.rect.y - self.ballView.height
+            self.ballView.setx(self.stickedTo.batView.getx() + self.stickedTo.batView.width/2 - self.ballView.width / 2)
+            self.ballView.sety(self.stickedTo.batView.gety() - self.ballView.height)
         else:
-            self.ballView.rect.x += self.x_change
-            self.ballView.rect.y += self.y_change
+            self.ballView.setx(self.ballView.getx()+self.x_change)
+            self.ballView.sety(self.ballView.gety()+self.y_change)
 
+            brickGroup = pygame.sprite.Group()
             for brick in bricks:
-                if self.setBallReflect(self.isOverlapped(brick)):
-                    brick.hit()
+                brickGroup.add(brick.brickView)
+            block_hit_list = pygame.sprite.spritecollide(self.ballView, brickGroup, False)
+            for block in block_hit_list:
+                if self.setBallReflect(self.isOverlapped(block.controller)):
+                    block.controller.hit()
                     return
-
+            wallGroup = pygame.sprite.Group()
             for wall in walls.wallViews:
-                if self.setBallReflect(self.isOverlapped(wall)):
+                wallGroup.add(wall)
+            block_hit_list = pygame.sprite.spritecollide(self.ballView, wallGroup, False)
+            for block in block_hit_list:
+                if self.setBallReflect(self.isOverlapped(block)):
                     return
 
-            if self.setBallReflect(self.isOverlapped(bat)):
-                ballCenterX = self.ballView.rect.x + self.ballView.width / 2
-                batCenterX = bat.getView().rect.x + bat.getView().width / 2
-                diff = batCenterX - ballCenterX
-                self.x_change = - int(diff / bat.getView().width * 9)
-                self.y_change = - sqrt(self.velocity**2 - self.x_change**2)
-                return
+            batGroup = pygame.sprite.Group()
+            batGroup.add(bat.getView())
+            block_hit_list = pygame.sprite.spritecollide(self.ballView, batGroup, False)
+            for block in block_hit_list:
+                if self.setBallReflect(self.isOverlapped(block.controller)):
+                    ballCenterX = self.ballView.getx() + self.ballView.width / 2
+                    batCenterX = block.getx() + block.width / 2
+                    diff = batCenterX - ballCenterX
+                    self.x_change = - int(diff / block.width * 9)
+                    self.y_change = - sqrt(self.velocity**2 - self.x_change**2)
+                    return
+
+
 
     def isOnPlayField(self):
-        return self.ballView.rect.y < Constants.Game_Screen_H
+        return self.ballView.gety() < Constants.Game_Screen_H
 
     def setBallReflect(self, params):
         reflect = params[0]
@@ -91,8 +104,8 @@ class BallController:
             else:
                 self.x_change = - self.x_change
                 self.y_change = self.y_change
-            self.ballView.rect.x = newx
-            self.ballView.rect.y = newy
+            self.ballView.setx(newx)
+            self.ballView.sety(newy)
             return True
         return False
 
