@@ -3,9 +3,9 @@ from Game import *
 # kind of a saved game
 class Process:
     
-    def __init__(self, screen, name):
+    def __init__(self, screen, name, level=0):
         # TODO
-        self.level = 0
+        self.level = int(level)
         if name == "":
             self.name = "None"
         else:

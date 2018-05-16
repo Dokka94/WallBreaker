@@ -14,12 +14,10 @@ class Wallbreaker:
         
     # make a new process
     def newProcess(self, name):
-        # TODO        
         Process(self.screen, name).startGame()
 
     # load a process, and start a game
     def loadProcess(self):
-        # TODO
         pygame.display.set_caption('Wall-Breaker')
         clock=pygame.time.Clock()
         all_sprite_list = pygame.sprite.Group()
@@ -46,15 +44,16 @@ class Wallbreaker:
         
     
         #---BUTTONS---
-        i=0
+        i = 0
         List = self.loadProcesses()
+        buttonDict = {}
         for key, value in List.items():
-            self.loadButton = ButtonView(Constants.Screen_Width/2-250, 100 + i*60 ,500, 50, str(key))
+            button = ButtonView(Constants.Screen_Width/2-250, 100 + i*60 ,500, 50, str(key))
             i+=1
-            all_sprite_list.add(self.loadButton)
-            
+            all_sprite_list.add(button)
+            buttonDict[key] = button
         
-        #----WINDOW----        
+        #----WINDOW----
         gameExit=False
         while not gameExit:
             for event in pygame.event.get():
@@ -65,8 +64,10 @@ class Wallbreaker:
             all_sprite_list.update()  
             self.screen.fill((255,255,255))
             all_sprite_list.draw(self.screen)
-            
-            #if self.loadButton.click() and ...
+
+            for key, value in List.items():
+                if buttonDict[key].click():
+                    Process(self.screen, key, value).startGame()
 
             self.screen.blit(text_title, [Constants.Screen_Width/2-70, 40])
             self.screen.blit(text_click, [Constants.Screen_Width/2-60, 70])
