@@ -79,6 +79,7 @@ class Game:
         #----WINDOW----
         gameExit=False
         while not gameExit and self.lives > 0 and not self.won:
+            start = time.time()
             for event in pygame.event.get():
                 if event.type==pygame.QUIT:
                     gameExit=True
@@ -88,23 +89,36 @@ class Game:
                     for ball in self.balls:
                         ball.release()
             for ball in self.balls:
-                ball.move(self.level.getBricks(), self.walls, self.bat)
+                ball.move(self.level, self.walls, self.bat)
                 self.level.deleteBrokenBricks()
                 self.won = self.level.isReady()
                 if not ball.isOnPlayField():
                     ball.stickTo(self.bat)
                     self.looseLife()
+            end = time.time()
+            #print("Counting time: " + str(end - start))
+            start = time.time()
             self.refreshAllSpriteList()
+            end = time.time()
+            #print("Refresh time: " + str(end - start))
+            start = time.time()
             self.allSpriteList.update()
+            end = time.time()
+            #print("Update time: " + str(end - start))
+            start = time.time()
             self.screen.fill(Constants.White)
+
             self.allSpriteList.draw(self.screen)
+
             #self.Screen.blit(text_score, [700,150])
             self.screen.blit(text_level, [700, 150])
 
             text_lives = font.render("Lives: " + str(self.lives), True, Constants.Black)
             self.screen.blit(text_lives, [700, 250])
-            
+            end = time.time()
+            #print("Draw time: " + str(end - start))
             pygame.display.update()
+
             clock.tick(15)
         if gameExit:
             pygame.quit()

@@ -194,7 +194,8 @@ class BrickView(ViewElement):
 
 
     def update(self):
-        self.draw()
+        #self.draw()
+        pass
 
     def getx(self):
         return self.rect.x

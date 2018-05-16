@@ -1,7 +1,7 @@
 from ModelElements import *
 from ViewElements import *
 from math import sqrt
-
+import time
 
 # a controller between the model and the view
 class BallController:
@@ -50,8 +50,7 @@ class BallController:
 
 
     # make the ball move
-    def move(self, bricks, walls, bat):
-        # TODO: getx() is not good, should be changed to getx() MVC
+    def move(self, level, walls, bat):
         if self.stickedTo is not None:
             self.ballView.setx(self.stickedTo.batView.getx() + self.stickedTo.batView.width/2 - self.ballView.width / 2)
             self.ballView.sety(self.stickedTo.batView.gety() - self.ballView.height)
@@ -60,13 +59,16 @@ class BallController:
             self.ballView.sety(self.ballView.gety()+self.y_change)
 
             brickGroup = pygame.sprite.Group()
+            bricks = level.getRange(self.ballView.getx(), self.ballView.gety())
             for brick in bricks:
                 brickGroup.add(brick.brickView)
+
             block_hit_list = pygame.sprite.spritecollide(self.ballView, brickGroup, False)
             for block in block_hit_list:
                 if self.setBallReflect(self.isOverlapped(block.controller)):
                     block.controller.hit()
                     return
+
             wallGroup = pygame.sprite.Group()
             for wall in walls.wallViews:
                 wallGroup.add(wall)
@@ -86,8 +88,6 @@ class BallController:
                     self.x_change = - int(diff / block.width * 9)
                     self.y_change = - sqrt(self.velocity**2 - self.x_change**2)
                     return
-
-
 
     def isOnPlayField(self):
         return self.ballView.gety() < Constants.Game_Screen_H
