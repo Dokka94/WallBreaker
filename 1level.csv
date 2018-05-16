@@ -1,6 +1,6 @@
  ; ; ; ; ; ; ; ; ; 
  ; ; ; ; ; ; ; ; ; 
- ;double; ;triple;triple;triple; ;double; ; 
+ ;double; ;double;simple;double; ;double; ;
  ;double;double; ; ; ;double;double; ; 
  ;double; ;;;; ;double; ; 
  ;double; ; ;simple; ; ;double; ; 
@@ -11,4 +11,4 @@
  ; ; ; ; ; ; ; ; ; 
  ; ; ; ; ; ; ; ; ; 
  ; ; ; ; ; ; ; ; ; 
- ; ; ; ; ; ; ; ; ; 
+ ; ; ; ; ; ; ; ; ;
